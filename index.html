@@ -5,14 +5,17 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Like API Tester</title>
 <style>
-  * { box-sizing: border-box; }
+  * { 
+    box-sizing: border-box; 
+    -webkit-tap-highlight-color: transparent; /* নীল স্কয়ার আলো বন্ধ */
+  }
   html, body { 
     margin: 0; 
     padding: 0;
     width: 100%;
     height: 100%;
-    height: 100dvh; /* Mobile view fix */
-    overflow: hidden; /* স্ক্রল সম্পূর্ণ বন্ধ */
+    height: 100dvh;
+    overflow: hidden; 
     font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; 
     color: #fff; 
   }
@@ -79,7 +82,7 @@
   }
   .select-field option { background: #181b2b; color: #fff; }
 
-  /* Submit Button */
+  /* Submit Button with Transition */
   .btn-submit {
     width: 100%;
     padding: 13px;
@@ -91,10 +94,22 @@
     font-weight: 800;
     cursor: pointer;
     margin-top: 4px;
-    transition: opacity 0.2s, transform 0.1s;
+    outline: none;
+    user-select: none;
     touch-action: manipulation;
+    box-shadow: none;
+    transition: transform 0.15s ease-in-out;
   }
-  .btn-submit:active { transform: scale(0.98); }
+
+  /* ১০০% থেকে ৯৫% হওয়ার জন্য ক্লিক / প্রেস অ্যাকশন */
+  .btn-submit:active {
+    transform: scale(0.95);
+  }
+
+  /* JS অ্যানিমেশনের জন্য সাপোর্ট ক্লাস */
+  .btn-press-anim {
+    transform: scale(0.95);
+  }
 
   /* Response Box */
   .response-box {
@@ -104,7 +119,7 @@
     background: rgba(6, 8, 16, 0.85);
     border: 1px solid rgba(255, 255, 255, 0.08);
     text-align: left;
-    height: 180px; /* পর্যাপ্ত বড় হাইট */
+    height: 180px;
     display: flex;
     align-items: flex-start;
   }
@@ -112,7 +127,7 @@
     margin: 0;
     width: 100%;
     height: 100%;
-    font: 13px/1.4 ui-monospace, SFMono-Regular, Menlo, monospace;
+    font: 11.5px/1.4 ui-monospace, SFMono-Regular, Menlo, monospace;
     color: #00ffaa;
     white-space: pre-wrap;
     word-break: break-all;
@@ -131,6 +146,12 @@
     font-size: 14px;
     font-weight: 700;
     margin-top: 8px;
+    outline: none;
+    user-select: none;
+    transition: transform 0.15s ease-in-out;
+  }
+  .channel:active {
+    transform: scale(0.98);
   }
 </style>
 </head>
@@ -162,7 +183,7 @@
       </select>
     </div>
 
-    <button class="btn-submit" onclick="sendLike()">❤️ SEND LIKE</button>
+    <button id="likeBtn" class="btn-submit" onclick="sendLike()">❤️ SEND LIKE</button>
   </div>
 
   <!-- Response Box -->
@@ -176,10 +197,17 @@
 
 <script>
 async function sendLike() {
+  const btn = document.getElementById('likeBtn');
   const uid = document.getElementById('uid').value.trim();
   const key = document.getElementById('key').value.trim();
   const server = document.getElementById('server').value;
   const jsonOutput = document.getElementById('jsonOutput');
+
+  // ক্লিক ইফেক্ট টিগার করা
+  btn.classList.add('btn-press-anim');
+  setTimeout(() => {
+    btn.classList.remove('btn-press-anim');
+  }, 150);
 
   if (!uid || !key) {
     alert("অনুগ্রহ করে UID এবং API Key দুটোই লিখুন!");
